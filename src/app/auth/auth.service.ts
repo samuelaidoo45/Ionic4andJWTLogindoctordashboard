@@ -1,13 +1,20 @@
 import { Platform, AlertController } from '@ionic/angular';
 import { Injectable } from  '@angular/core';
 import { HttpClient } from  '@angular/common/http';
-import { tap ,catchError } from  'rxjs/operators';
-import { Observable, BehaviorSubject } from  'rxjs';
+import { tap,catchError } from  'rxjs/operators';
+import { Observable, BehaviorSubject,from, of  } from  'rxjs';
 
 import { Storage } from  '@ionic/storage';
 import { User } from  './user';
 import { AuthResponse } from  './auth-response';
+import { CanActivate } from '@angular/router';
+import { Router } from '@angular/router';
+import { take, map, switchMap } from 'rxjs/operators';
+import { JwtHelperService } from "@auth0/angular-jwt";
 
+
+
+ const helper = new JwtHelperService();
 
  
 //const TOKEN_KEY = 'access_token';
@@ -16,14 +23,18 @@ import { AuthResponse } from  './auth-response';
   providedIn: 'root'
 })
 
-export class AuthService {
+export class AuthService  implements CanActivate {
  
   //url = environment.url;
   //user = null;
   //authenticationState = new BehaviorSubject(false);
+  public user: Observable<any>;
+  private userData = new BehaviorSubject(null);
+
   
   AUTH_SERVER_ADDRESS:  string  =  'https://virtual-healthcare.herokuapp.com';
-authSubject  =  new  BehaviorSubject(false);
+  authSubject  =  new  BehaviorSubject(false);
+
   
 
  
@@ -34,8 +45,52 @@ authSubject  =  new  BehaviorSubject(false);
       //this.checkToken();
     //});
   //}
-  constructor(private  httpClient:  HttpClient, private  storage:  Storage) { }
-
+  constructor(private  httpClient:  HttpClient,    private router: Router,private plt: Platform
+,private  storage:  Storage, private alertController:AlertController,private auth: AuthService) {
+		this.loadStoredToken();  
+	}
+  
+  loadStoredToken() {
+    let platformObs = from(this.plt.ready());
+ 
+    this.user = platformObs.pipe(
+      switchMap(() => {
+        return from(this.storage.get("ACCESS_TOKEN"));
+      }),
+      map(token => {
+        if (token) {
+          let decoded = helper.decodeToken(token); 
+          this.userData.next(decoded);
+          return true;
+        } else {
+          return null;
+        }
+      })
+    );
+	}
+  
+   canActivate(): Observable<boolean> {
+    return this.auth.user.pipe(
+      take(1),
+      map(user => {
+        if (!user) {
+          this.alertController.create({
+            header: 'Unauthorized',
+            message: 'You are not allowed to access that page.',
+            buttons: ['OK']
+          }).then(alert => alert.present());
+ 
+          this.router.navigateByUrl('/');
+          return false;
+        } else {
+          return true;
+        }
+      })
+    );
+  }
+	 getUser() {
+    return this.userData.getValue();
+  }
 /* 
   checkToken() {
     this.storage.get(TOKEN_KEY).then(token => {
@@ -89,8 +144,7 @@ authSubject  =  new  BehaviorSubject(false);
   }*/
   
    login(credentials): Observable<AuthResponse> {
-    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/oauth/token`,
-		credentials).pipe(
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/oauth/token`,credentials).pipe(
       tap(async (res: AuthResponse) => {
 			console.log(res['access_token']);
 			
@@ -99,7 +153,18 @@ authSubject  =  new  BehaviorSubject(false);
           await this.storage.set("EXPIRES_IN", res['expires_in']);
           this.authSubject.next(true);
         }
-      })
+		 this.router.navigateByUrl('/menu');
+
+      },err => {
+		  let alert = this.alertController.create({
+			message: '',
+			header: 'Login Failed, Try Again',
+			buttons: ['OK']
+		});
+		alert.then(alert => alert.present());
+	  })
+		
+	   
     );
   }
   
@@ -110,7 +175,7 @@ authSubject  =  new  BehaviorSubject(false);
   }
   
    isLoggedIn() {
-    return this.authSubject.asObservable();
+    return this.authSubject.value;
   }
  /*
   logout() {
@@ -144,5 +209,5 @@ authSubject  =  new  BehaviorSubject(false);
     });
     alert.then(alert => alert.present());
   }*/
- 
+	
 }
