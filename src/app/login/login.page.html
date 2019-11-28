@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
-	<ion-icon name="pulse"></icon>
-    <ion-title class="ion-text-center">Doctor Login</ion-title>
+	
+    <ion-title class="ion-text-center"><ion-icon name="pulse"></ion-icon>Doctor Login</ion-title>
   </ion-toolbar>
 </ion-header>
  
@@ -12,14 +12,22 @@
     <ion-item>
 	<ion-input type="hidden" formControlName="grant_type" value="password"></ion-input>
       <ion-label position="floating">Email</ion-label>
+		<div style="margin-top:20px">
+		<ion-item>
 	  <ion-icon name="at"></ion-icon>
       <ion-input type="username" formControlName="username"></ion-input>
+	  </ion-item>
+	  </div>
     </ion-item>
  
     <ion-item>
       <ion-label position="floating">Password</ion-label>
+	  <div style="margin-top:20px">
+	  <ion-item>
 	  <ion-icon name="key"></ion-icon>
       <ion-input type="password" formControlName="password"></ion-input>
+	  </ion-item>
+	  </div>
 	  	<ion-input type="hidden" formControlName="client_id" value="2"></ion-input>
 		<ion-input type="hidden" formControlName="client_secret" value="Z74s1YLfKaF3WxRYhO8feG42vY1zqmr7HNCX7Nh8"></ion-input>
 		<ion-input type="hidden" formControlName="provider" value="doctors"></ion-input>
