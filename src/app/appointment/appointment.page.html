@@ -1,18 +1,20 @@
 <ion-header>
   <ion-toolbar color="primary">
-	
+	<ion-button >
+		  <ion-back-button color = "dark" defaultHref="/menu"></ion-back-button>
+	</ion-button>
     <ion-title>
-	<ion-buttons slot="start">
-		  <ion-back-button defaultHerf="/"></ion-back-button>
-	</ion-buttons>
-	<ion-icon name="calendar" ></ion-icon>Appointment</ion-title>
+	<ion-icon name="calendar" ></ion-icon>
+	Appointment
+	
+	</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-		<ion-button (click)="search()">Get Appointment</ion-button>
+		<ion-button expand="block" (click)="search()">Get Appointment</ion-button>
   <ion-list>
-    <ion-item button *ngFor="let item of results" [routerLink]="['/', 'movies', item.imdbID]">
+    <ion-item button *ngFor="let item of results" [routerLink]="['/', 'appointment', item.id]">
     
     <ion-label text-wrap>
       <h3>{{ item.email}}</h3>

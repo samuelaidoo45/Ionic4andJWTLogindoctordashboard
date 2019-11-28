@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import {  AuthService } from 'src/app/auth/auth.service';
+import { Location } from "@angular/common";
 
 @Component({
   selector: 'app-appointment',
@@ -11,7 +12,7 @@ export class AppointmentPage implements OnInit {
 	
 	public results:any =[] ;
 
-  constructor(private authService: AuthService) { 
+  constructor(private authService: AuthService,private location:Location) { 
 	this.results = '';
   }
 
@@ -24,5 +25,8 @@ export class AppointmentPage implements OnInit {
 		this.results = anyData.data;
   });
   }
+  myBackButton(){
+  this.location.back();
+}
 
 }

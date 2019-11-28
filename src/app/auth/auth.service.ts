@@ -1,6 +1,6 @@
 import { Platform, AlertController } from '@ionic/angular';
 import { Injectable } from  '@angular/core';
-import { HttpClient } from  '@angular/common/http';
+import { HttpClient,HttpHeaders} from  '@angular/common/http';
 import { tap,catchError } from  'rxjs/operators';
 import { Observable, BehaviorSubject,from, of  } from  'rxjs';
 
@@ -15,7 +15,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
 
 
  const helper = new JwtHelperService();
-
+ 
  
 //const TOKEN_KEY = 'access_token';
  
@@ -30,7 +30,7 @@ export class AuthService  implements CanActivate {
   //authenticationState = new BehaviorSubject(false);
   public user: Observable<any>;
   private userData = new BehaviorSubject(null);
-
+	public access_tok : string;
   
   AUTH_SERVER_ADDRESS:  string  =  'https://virtual-healthcare.herokuapp.com';
   authSubject  =  new  BehaviorSubject(false);
@@ -147,7 +147,7 @@ export class AuthService  implements CanActivate {
     return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/oauth/token`,credentials).pipe(
       tap(async (res: AuthResponse) => {
 			console.log(res['access_token']);
-			
+			this.access_tok = res['access_token'];
         if (res) {
           await this.storage.set("ACCESS_TOKEN", res['access_token']);
           await this.storage.set("EXPIRES_IN", res['expires_in']);
@@ -180,9 +180,14 @@ export class AuthService  implements CanActivate {
   
    url = 'https://virtual-healthcare.herokuapp.com/api/doctor/appointment-list';
   
-
+	
   SearchData(){
-    return this.httpClient.get(this.url);
+	  const opts = {
+		  headers: new HttpHeaders({
+				'Authorization': 'Bearer '+this.access_tok
+				})
+	  };
+    return this.httpClient.get(this.url,opts);
   
   }
  /*

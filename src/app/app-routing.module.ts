@@ -26,6 +26,10 @@ const routes: Routes = [
     loadChildren: () => import('./appointment/appointment.module').then( m => m.AppointmentPageModule)
   },
   {
+    path: 'appointment/:id',
+    loadChildren: () => import('./approve-appointment/approve-appointment.module').then( m => m.ApproveAppointmentPageModule)
+  },
+  {
     path: 'approve-appointment',
     loadChildren: () => import('./approve-appointment/approve-appointment.module').then( m => m.ApproveAppointmentPageModule)
   },
