@@ -9,16 +9,20 @@ import {  AuthService } from 'src/app/auth/auth.service';
 })
 export class AppointmentPage implements OnInit {
 	
-	results: Observable<any>;
+	public results:any =[] ;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) { 
+	this.results = '';
+  }
 
   ngOnInit() {
   }
   
-  searchChanged(){
-    this.results=this.authService.SearchData();
-    
+  search(){
+    this.results=this.authService.SearchData().subscribe((data)=>{
+		var anyData = <any>data;
+		this.results = anyData.data;
+  });
   }
 
 }

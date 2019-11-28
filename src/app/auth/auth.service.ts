@@ -178,18 +178,12 @@ export class AuthService  implements CanActivate {
     return this.authSubject.value;
   }
   
-   url = 'http://virtual-healthcare.herokuapp.com/api/doctor/';
+   url = 'https://virtual-healthcare.herokuapp.com/api/doctor/appointment-list';
   
 
-
-  SearchData(): Observable<any> {
-    return this.http.get(url)
-      .pipe(
-        map(results => {
-          console.log('RAW: ', results);
-          return results['Search'];
-        })
-      );
+  SearchData(){
+    return this.httpClient.get(this.url);
+  
   }
  /*
   logout() {
