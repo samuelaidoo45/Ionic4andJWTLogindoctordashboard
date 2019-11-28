@@ -11,6 +11,17 @@ import { Router } from '@angular/router';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
+	pages = [
+		{
+		title:'First page with Tabs',
+		url : '/menu/first'
+		},
+		{
+		title:'Second page with Tabs',
+		url : '/menu/second'
+		}
+		
+	];
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,

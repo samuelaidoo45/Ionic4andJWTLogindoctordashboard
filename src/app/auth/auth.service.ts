@@ -177,6 +177,20 @@ export class AuthService  implements CanActivate {
    isLoggedIn() {
     return this.authSubject.value;
   }
+  
+   url = 'http://virtual-healthcare.herokuapp.com/api/doctor/';
+  
+
+
+  SearchData(): Observable<any> {
+    return this.http.get(url)
+      .pipe(
+        map(results => {
+          console.log('RAW: ', results);
+          return results['Search'];
+        })
+      );
+  }
  /*
   logout() {
     this.storage.remove(TOKEN_KEY).then(() => {

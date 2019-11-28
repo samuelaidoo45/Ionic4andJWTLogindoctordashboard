@@ -10,12 +10,14 @@ import { Router,RouterEvent } from '@angular/router';
 export class MenuPage implements OnInit{
 	pages = [
 		{
-		title:'First page with Tabs',
-		url : '/menu/first'
+		title:'Appointments',
+		url : '/appointment',
+		icon: 'watch'
 		},
 		{
-		title:'Second page with Tabs',
-		url : '/menu/second'
+		title:'Diagnosis',
+		url : '/diagnosis',
+		icon : 'pulse'
 		}
 		
 	];
